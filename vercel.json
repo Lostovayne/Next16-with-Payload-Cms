@@ -16,15 +16,5 @@
     "env": {
       "LIBSQL_CLIENT": "web"
     }
-  },
-  "env": {
-    "PAYLOAD_SECRET": "@payload-secret",
-    "TURSO_DATABASE_URL": "@turso-database-url",
-    "TURSO_AUTH_TOKEN": "@turso-auth-token",
-    "R2_BUCKET_NAME": "@r2-bucket-name",
-    "R2_ACCESS_KEY_ID": "@r2-access-key-id",
-    "R2_SECRET_ACCESS_KEY": "@r2-secret-access-key",
-    "R2_ENDPOINT": "@r2-endpoint",
-    "LIBSQL_CLIENT": "web"
   }
 }
