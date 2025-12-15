@@ -376,7 +376,7 @@ export const Posts: CollectionConfig = {
         return data
       },
     ],
-    
+
     // Después de crear
     afterChange: [
       async ({ doc, req, operation }) => {
@@ -386,7 +386,7 @@ export const Posts: CollectionConfig = {
         }
       },
     ],
-    
+
     // Antes de leer
     beforeRead: [
       ({ doc, req }) => {
@@ -394,7 +394,7 @@ export const Posts: CollectionConfig = {
         return doc
       },
     ],
-    
+
     // Antes de eliminar
     beforeDelete: [
       async ({ req, id }) => {
@@ -524,22 +524,22 @@ export const Posts: CollectionConfig = {
     read: ({ req: { user } }) => {
       if (user) return true // Usuarios ven todo
       return {
-        status: { equals: 'published' } // Público solo ve publicados
+        status: { equals: 'published' }, // Público solo ve publicados
       }
     },
-    
+
     // Crear: Solo usuarios autenticados
     create: ({ req: { user } }) => !!user,
-    
+
     // Actualizar: Solo el autor o admin
     update: ({ req: { user } }) => {
       if (!user) return false
       if (user.role === 'admin') return true
       return {
-        author: { equals: user.id }
+        author: { equals: user.id },
       }
     },
-    
+
     // Eliminar: Solo admin
     delete: ({ req: { user } }) => {
       return user?.role === 'admin'
@@ -681,7 +681,7 @@ import config from '@/payload.config'
 
 export async function GET(request: NextRequest) {
   const payload = await getPayload({ config })
-  
+
   const posts = await payload.find({
     collection: 'posts',
     where: {
@@ -692,7 +692,7 @@ export async function GET(request: NextRequest) {
     limit: 10,
     sort: '-createdAt',
   })
-  
+
   return NextResponse.json(posts)
 }
 ```
@@ -751,7 +751,7 @@ import config from '@/payload.config'
 describe('Posts Collection', () => {
   it('should create a post', async () => {
     const payload = await getPayload({ config })
-    
+
     const post = await payload.create({
       collection: 'posts',
       data: {
@@ -760,7 +760,7 @@ describe('Posts Collection', () => {
         status: 'draft',
       },
     })
-    
+
     expect(post.title).toBe('Test Post')
   })
 })

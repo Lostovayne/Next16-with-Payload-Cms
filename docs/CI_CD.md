@@ -19,12 +19,12 @@ Documentación completa de las automatizaciones configuradas en el proyecto.
 
 Este proyecto incluye 4 automatizaciones principales:
 
-| Workflow | Archivo | Trigger | Propósito |
-|----------|---------|---------|-----------|
-| **CI/CD** | `.github/workflows/ci.yml` | Push/PR a main/develop | Tests, linting, build |
-| **Auto-Format** | `.github/workflows/format.yml` | Push/PR/Manual | Formateo automático con Prettier |
-| **Dependabot Auto-Merge** | `.github/workflows/dependabot-automerge.yml` | PRs de Dependabot | Auto-merge de actualizaciones menores |
-| **Dependabot Config** | `.github/dependabot.yml` | Automático (semanal) | Actualización de dependencias |
+| Workflow                  | Archivo                                      | Trigger                | Propósito                             |
+| ------------------------- | -------------------------------------------- | ---------------------- | ------------------------------------- |
+| **CI/CD**                 | `.github/workflows/ci.yml`                   | Push/PR a main/develop | Tests, linting, build                 |
+| **Auto-Format**           | `.github/workflows/format.yml`               | Push/PR/Manual         | Formateo automático con Prettier      |
+| **Dependabot Auto-Merge** | `.github/workflows/dependabot-automerge.yml` | PRs de Dependabot      | Auto-merge de actualizaciones menores |
+| **Dependabot Config**     | `.github/dependabot.yml`                     | Automático (semanal)   | Actualización de dependencias         |
 
 ---
 
@@ -49,11 +49,11 @@ Para CI/CD completo en GitHub Actions, puedes agregar estos secrets:
 Settings → Secrets and variables → Actions → New repository secret
 ```
 
-| Secret | Descripción | Requerido |
-|--------|-------------|-----------|
-| `PAYLOAD_SECRET` | Secret de Payload (para builds) | ❌ No (usa fallback) |
-| `TURSO_DATABASE_URL` | URL de Turso (para builds) | ❌ No (usa fallback) |
-| `TURSO_AUTH_TOKEN` | Token de Turso | ❌ No (usa fallback) |
+| Secret               | Descripción                     | Requerido            |
+| -------------------- | ------------------------------- | -------------------- |
+| `PAYLOAD_SECRET`     | Secret de Payload (para builds) | ❌ No (usa fallback) |
+| `TURSO_DATABASE_URL` | URL de Turso (para builds)      | ❌ No (usa fallback) |
+| `TURSO_AUTH_TOKEN`   | Token de Turso                  | ❌ No (usa fallback) |
 
 > **Nota:** Los secrets NO son necesarios para que el CI funcione. El workflow usa valores de prueba por defecto.
 
@@ -66,6 +66,7 @@ Settings → Secrets and variables → Actions → New repository secret
 Archivo: `.github/dependabot.yml`
 
 **Características:**
+
 - ✅ Actualizaciones **semanales** (lunes 9:00 AM)
 - ✅ Solo actualizaciones **menores y patches** (no major)
 - ✅ Agrupación inteligente de PRs (payload, react, testing, etc.)
@@ -76,11 +77,11 @@ Archivo: `.github/dependabot.yml`
 
 ```yaml
 # Ejemplos de grupos configurados:
-payload:           # @payloadcms/*, payload
-react-ecosystem:   # react, react-dom, next, @types/react*
-testing:           # vitest, playwright, @playwright/*
-linting:           # eslint, prettier
-dev-dependencies:  # Todas las devDependencies
+payload: # @payloadcms/*, payload
+react-ecosystem: # react, react-dom, next, @types/react*
+testing: # vitest, playwright, @playwright/*
+linting: # eslint, prettier
+dev-dependencies: # Todas las devDependencies
 ```
 
 ### Personalizar Dependabot
@@ -90,19 +91,19 @@ Edita `.github/dependabot.yml`:
 ```yaml
 # Cambiar horario
 schedule:
-  interval: "weekly"
-  day: "monday"
-  time: "09:00"
-  timezone: "America/New_York"  # Cambia tu zona horaria
+  interval: 'weekly'
+  day: 'monday'
+  time: '09:00'
+  timezone: 'America/New_York' # Cambia tu zona horaria
 
 # Cambiar límite de PRs
-open-pull-requests-limit: 10  # Ajusta según necesites
+open-pull-requests-limit: 10 # Ajusta según necesites
 
 # Permitir actualizaciones major (no recomendado)
 # Elimina o comenta esta sección:
 ignore:
-  - dependency-name: "*"
-    update-types: ["version-update:semver-major"]
+  - dependency-name: '*'
+    update-types: ['version-update:semver-major']
 ```
 
 ---
@@ -116,6 +117,7 @@ Este workflow se ejecuta en cada push o PR a `main` o `develop`.
 ### Jobs Configurados
 
 #### 1️⃣ Lint & Type Check
+
 ```yaml
 ✅ ESLint
 ✅ TypeScript type checking
@@ -123,6 +125,7 @@ Este workflow se ejecuta en cada push o PR a `main` o `develop`.
 ```
 
 #### 2️⃣ Build
+
 ```yaml
 ✅ pnpm build
 ✅ Verifica que el proyecto compile correctamente
@@ -130,6 +133,7 @@ Este workflow se ejecuta en cada push o PR a `main` o `develop`.
 ```
 
 #### 3️⃣ Security Audit
+
 ```yaml
 ✅ pnpm audit
 ✅ Verifica vulnerabilidades de seguridad
@@ -137,10 +141,10 @@ Este workflow se ejecuta en cada push o PR a `main` o `develop`.
 ```
 
 #### 4️⃣ Tests (COMENTADO)
+
 ```yaml
 ❌ Tests de integración (Vitest) - DESACTIVADO
 ❌ Tests E2E (Playwright) - DESACTIVADO
-
 # Para activar, descomenta las secciones en ci.yml
 ```
 
@@ -174,7 +178,7 @@ Cuando tengas tests implementados:
 - name: Setup Node.js
   uses: actions/setup-node@v4
   with:
-    node-version: '20'  # Cambia a '18' o '22' si necesitas
+    node-version: '20' # Cambia a '18' o '22' si necesitas
 
 # Agregar más linters
 - name: Run additional checks
@@ -269,7 +273,7 @@ Aprueba y hace merge automático de PRs de Dependabot para actualizaciones menor
    ├─> ✅ Auto-aprueba el PR
    ├─> 🔄 Espera a que pasen los CI checks
    └─> 🎯 Hace merge automático
-   
+
 4. Si es major:
    ├─> ⚠️ Agrega label "needs-review"
    ├─> 💬 Comenta en el PR
@@ -278,11 +282,11 @@ Aprueba y hace merge automático de PRs de Dependabot para actualizaciones menor
 
 ### Tipos de Actualización
 
-| Tipo | Auto-merge | Ejemplo |
-|------|------------|---------|
-| **Patch** | ✅ Sí | `1.0.0 → 1.0.1` |
-| **Minor** | ✅ Sí | `1.0.0 → 1.1.0` |
-| **Major** | ❌ No | `1.0.0 → 2.0.0` |
+| Tipo      | Auto-merge | Ejemplo         |
+| --------- | ---------- | --------------- |
+| **Patch** | ✅ Sí      | `1.0.0 → 1.0.1` |
+| **Minor** | ✅ Sí      | `1.0.0 → 1.1.0` |
+| **Major** | ❌ No      | `1.0.0 → 2.0.0` |
 
 ### Personalizar Auto-Merge
 
@@ -319,11 +323,13 @@ if: false && github.actor == 'dependabot[bot]'
 ### Desactivar un Workflow Temporalmente
 
 **Opción 1: Desde GitHub UI**
+
 1. Ve a **Actions**
 2. Click en el workflow
 3. Click en `...` → **Disable workflow**
 
 **Opción 2: Renombrar archivo**
+
 ```bash
 # Desactivar CI
 mv .github/workflows/ci.yml .github/workflows/ci.yml.disabled
@@ -396,6 +402,7 @@ El CI usa valores de prueba por defecto. Si quieres usar tus propios valores:
 **Verifica:**
 
 1. **Permisos de workflow:**
+
    ```yaml
    permissions:
      contents: write
@@ -420,7 +427,7 @@ Aumenta memoria en el workflow:
 - name: Build application
   run: pnpm build
   env:
-    NODE_OPTIONS: "--max-old-space-size=8000"
+    NODE_OPTIONS: '--max-old-space-size=8000'
 ```
 
 ### ❌ pnpm install falla
@@ -431,7 +438,7 @@ Aumenta memoria en el workflow:
 - name: Setup pnpm
   uses: pnpm/action-setup@v4
   with:
-    version: 10  # Debe coincidir con tu versión local
+    version: 10 # Debe coincidir con tu versión local
 ```
 
 ---
