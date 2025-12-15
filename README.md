@@ -19,6 +19,7 @@ Plantilla completa de Payload CMS 3.0 con Next.js 15, base de datos Turso (SQLit
 - **[🛠️ DEVELOPMENT.md](./docs/DEVELOPMENT.md)** - Guía de desarrollo y extensión
 - **[📜 COMMANDS.md](./docs/COMMANDS.md)** - Referencia completa de comandos
 - **[🏗️ ARCHITECTURE.md](./docs/ARCHITECTURE.md)** - Arquitectura técnica con diagramas
+- **[🚀 CI_CD.md](./docs/CI_CD.md)** - GitHub Actions, Dependabot y automatizaciones
 - **[🤝 CONTRIBUTING.md](./docs/CONTRIBUTING.md)** - Guía para contribuir al proyecto
 
 ## 📋 Tabla de Contenidos
@@ -61,6 +62,7 @@ Plantilla completa de Payload CMS 3.0 con Next.js 15, base de datos Turso (SQLit
 - ✅ **🐳 Docker Ready** - Despliega en cualquier lugar
 - ✅ **📚 Documentación Completa** - Guías paso a paso en carpeta `/docs`
 - ✅ **🔧 Type-Safe** - TypeScript en todo el stack
+- ✅ **🤖 CI/CD Integrado** - GitHub Actions + Dependabot + Auto-format
 
 ## 📦 Requisitos Previos
 
@@ -510,6 +512,7 @@ pnpm dev
 - **[🛠️ Guía de Desarrollo](./docs/DEVELOPMENT.md)** - Crea nuevas colecciones, campos y personaliza el proyecto
 - **[📜 Referencia de Comandos](./docs/COMMANDS.md)** - Todos los comandos explicados en detalle
 - **[🏗️ Arquitectura Técnica](./docs/ARCHITECTURE.md)** - Diagramas, flujos de datos y decisiones de diseño
+- **[🚀 CI/CD y Automatizaciones](./docs/CI_CD.md)** - GitHub Actions, Dependabot y workflows
 - **[🤝 Guía de Contribución](./docs/CONTRIBUTING.md)** - Cómo contribuir al proyecto
 
 ### Recursos Externos
@@ -582,7 +585,7 @@ Creado con ❤️ usando Payload CMS, Next.js, Turso y Cloudflare R2
 
 **¿Necesitas ayuda?**
 
-- 📖 Lee la documentación: [QUICKSTART](./docs/QUICKSTART.md) | [DEVELOPMENT](./docs/DEVELOPMENT.md) | [COMMANDS](./docs/COMMANDS.md) | [ARCHITECTURE](./docs/ARCHITECTURE.md) | [CONTRIBUTING](./docs/CONTRIBUTING.md)
+- 📖 Lee la documentación: [QUICKSTART](./docs/QUICKSTART.md) | [DEVELOPMENT](./docs/DEVELOPMENT.md) | [COMMANDS](./docs/COMMANDS.md) | [ARCHITECTURE](./docs/ARCHITECTURE.md) | [CI/CD](./docs/CI_CD.md) | [CONTRIBUTING](./docs/CONTRIBUTING.md)
 - 🐛 Reporta bugs: Abre un issue en el repositorio
 - 💬 Consulta la [documentación oficial de Payload](https://payloadcms.com/docs)
 

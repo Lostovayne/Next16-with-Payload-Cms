@@ -1,0 +1,170 @@
+# Configuración de Dependabot para actualizaciones automáticas de dependencias
+# Documentación: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # Actualizaciones de pnpm (package.json)
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
+      timezone: 'America/New_York'
+
+    # Estrategia de versionado
+    # patch: actualizaciones de parches (1.0.x)
+    # minor: actualizaciones menores (1.x.0)
+    versioning-strategy: increase-if-necessary
+
+    # Agrupa actualizaciones para reducir PRs
+    groups:
+      # Grupo para actualizaciones de Payload CMS
+      payload:
+        patterns:
+          - '@payloadcms/*'
+          - 'payload'
+        update-types:
+          - 'minor'
+          - 'patch'
+
+      # Grupo para React y Next.js
+      react-ecosystem:
+        patterns:
+          - 'react'
+          - 'react-dom'
+          - 'next'
+          - '@types/react'
+          - '@types/react-dom'
+        update-types:
+          - 'minor'
+          - 'patch'
+
+      # Grupo para AWS/S3
+      aws-sdk:
+        patterns:
+          - '@aws-sdk/*'
+        update-types:
+          - 'minor'
+          - 'patch'
+
+      # Grupo para Drizzle y base de datos
+      database:
+        patterns:
+          - 'drizzle-kit'
+          - '@libsql/*'
+        update-types:
+          - 'minor'
+          - 'patch'
+
+      # Grupo para testing
+      testing:
+        patterns:
+          - 'vitest'
+          - 'playwright'
+          - '@playwright/*'
+          - '@vitejs/*'
+          - '@testing-library/*'
+          - 'playwright-core'
+        update-types:
+          - 'minor'
+          - 'patch'
+
+      # Grupo para linting y formato
+      linting:
+        patterns:
+          - 'eslint'
+          - 'eslint-*'
+          - 'prettier'
+          - '@eslint/*'
+        update-types:
+          - 'minor'
+          - 'patch'
+
+      # Grupo para dependencias de desarrollo
+      dev-dependencies:
+        dependency-type: 'development'
+        update-types:
+          - 'minor'
+          - 'patch'
+
+    # Límite de PRs abiertos simultáneamente
+    open-pull-requests-limit: 10
+
+    # Revisor automático (opcional - descomentar y cambiar por tu usuario)
+    # reviewers:
+    #   - "tu-usuario-github"
+
+    # Asignar automáticamente (opcional)
+    # assignees:
+    #   - "tu-usuario-github"
+
+    # Labels personalizados
+    labels:
+      - 'dependencies'
+      - 'automated'
+
+    # Commit message personalizados
+    commit-message:
+      prefix: 'chore'
+      prefix-development: 'chore'
+      include: 'scope'
+
+    # Permitir solo actualizaciones menores y patches (no major)
+    # Las actualizaciones major requerirán revisión manual
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
+
+    # Rebase automático de PRs
+    rebase-strategy: 'auto'
+
+  # Actualizaciones de GitHub Actions
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
+      timezone: 'America/New_York'
+
+    labels:
+      - 'dependencies'
+      - 'github-actions'
+      - 'automated'
+
+    commit-message:
+      prefix: 'ci'
+      include: 'scope'
+
+    open-pull-requests-limit: 5
+
+    # Solo actualizaciones menores y patches para actions
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
+
+  # Actualizaciones de Docker (si usas Docker)
+  - package-ecosystem: 'docker'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '10:00'
+      timezone: 'America/New_York'
+
+    labels:
+      - 'dependencies'
+      - 'docker'
+      - 'automated'
+
+    commit-message:
+      prefix: 'chore'
+      include: 'scope'
+
+    open-pull-requests-limit: 3
+
+    # Solo actualizaciones menores para Docker
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']

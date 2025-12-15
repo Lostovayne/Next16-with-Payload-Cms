@@ -12,6 +12,7 @@ Bienvenido a la documentación completa de **Payload CMS 3.0 + Next.js 15 + Turs
 | **[🛠️ DEVELOPMENT.md](./DEVELOPMENT.md)**   | Guía completa de desarrollo y extensión del proyecto       | ⏱️ 20 min         |
 | **[📜 COMMANDS.md](./COMMANDS.md)**         | Referencia completa de todos los comandos disponibles      | ⏱️ 15 min         |
 | **[🏗️ ARCHITECTURE.md](./ARCHITECTURE.md)** | Arquitectura técnica del proyecto con diagramas            | ⏱️ 15 min         |
+| **[🚀 CI_CD.md](./CI_CD.md)**               | GitHub Actions, Dependabot y automatizaciones              | ⏱️ 10 min         |
 
 ### Para Contribuidores
 
@@ -29,13 +30,15 @@ Bienvenido a la documentación completa de **Payload CMS 3.0 + Next.js 15 + Turs
 2. **[Sigue QUICKSTART.md](./QUICKSTART.md)** para configurar todo en 5 minutos
 3. **[Explora DEVELOPMENT.md](./DEVELOPMENT.md)** para aprender a crear tus primeras colecciones
 4. **[Revisa ARCHITECTURE.md](./ARCHITECTURE.md)** para entender cómo funciona todo internamente
+5. **[Configura CI/CD.md](./CI_CD.md)** para habilitar GitHub Actions y automatizaciones
 
 ### 👨‍💻 Si ya tienes el proyecto corriendo:
 
 1. **[DEVELOPMENT.md](./DEVELOPMENT.md)** - Aprende a crear colecciones, campos y personalizar
 2. **[COMMANDS.md](./COMMANDS.md)** - Consulta todos los comandos disponibles
 3. **[ARCHITECTURE.md](./ARCHITECTURE.md)** - Entiende el flujo de datos y componentes
-4. **[README principal](../README.md)** - Referencia para despliegue y troubleshooting
+4. **[CI_CD.md](./CI_CD.md)** - Configura automatizaciones con GitHub Actions
+5. **[README principal](../README.md)** - Referencia para despliegue y troubleshooting
 
 ### 🤝 Si quieres contribuir:
 
@@ -171,6 +174,29 @@ Bienvenido a la documentación completa de **Payload CMS 3.0 + Next.js 15 + Turs
 
 ---
 
+### 🚀 CI_CD.md
+
+**Objetivo:** Configurar GitHub Actions y automatizaciones.
+
+**Contenido:**
+
+- 🤖 Configuración de Dependabot
+- 🔄 CI/CD Pipeline (linting, build, tests)
+- 🎨 Auto-format con Prettier
+- 🔀 Auto-merge de actualizaciones menores
+- ⚙️ Personalización de workflows
+- 🐛 Troubleshooting de Actions
+
+**¿Cuándo leerlo?**
+
+- Acabas de crear el repositorio en GitHub
+- Quieres automatizar actualizaciones de dependencias
+- Necesitas CI/CD para tu proyecto
+- Quieres formateo automático de código
+- Tienes problemas con GitHub Actions
+
+---
+
 ## 🔍 Buscar Información Rápida
 
 ### Configuración Inicial
@@ -187,6 +213,13 @@ Bienvenido a la documentación completa de **Payload CMS 3.0 + Next.js 15 + Turs
 - **Hooks:** [DEVELOPMENT.md - Hooks](./DEVELOPMENT.md#-hooks-y-validación)
 - **Permisos:** [DEVELOPMENT.md - Control de Acceso](./DEVELOPMENT.md#-control-de-acceso)
 - **Migraciones:** [DEVELOPMENT.md - Migraciones](./DEVELOPMENT.md#%EF%B8%8F-migraciones-de-base-de-datos)
+
+### CI/CD
+
+- **Configurar Actions:** [CI_CD.md - Configuración Inicial](./CI_CD.md#-configuración-inicial)
+- **Dependabot:** [CI_CD.md - Dependabot](./CI_CD.md#-dependabot)
+- **Auto-format:** [CI_CD.md - Auto-Format](./CI_CD.md#-auto-format)
+- **Auto-merge:** [CI_CD.md - Auto-Merge](./CI_CD.md#-auto-merge-de-dependabot)
 
 ### Arquitectura
 
@@ -236,7 +269,9 @@ Bienvenido a la documentación completa de **Payload CMS 3.0 + Next.js 15 + Turs
    ↓
 4. ARCHITECTURE.md - Flujo de Datos
    ↓
-5. COMMANDS.md - Migraciones
+5. CI_CD.md - Configurar GitHub Actions
+   ↓
+6. COMMANDS.md - Migraciones
 ```
 
 ### 💪 Avanzado
@@ -248,9 +283,11 @@ Bienvenido a la documentación completa de **Payload CMS 3.0 + Next.js 15 + Turs
    ↓
 3. DEVELOPMENT.md - API Personalizada
    ↓
-4. DEVELOPMENT.md - Testing
+4. CI_CD.md - Automatizaciones avanzadas
    ↓
-5. CONTRIBUTING.md (contribuir mejoras)
+5. DEVELOPMENT.md - Testing
+   ↓
+6. CONTRIBUTING.md (contribuir mejoras)
 ```
 
 ---
@@ -263,6 +300,7 @@ Bienvenido a la documentación completa de **Payload CMS 3.0 + Next.js 15 + Turs
 - **[📦 package.json](../package.json)** - Ver dependencias y scripts
 - **[⚙️ payload.config.ts](../src/payload.config.ts)** - Configuración principal
 - **[📋 .env.example](../.env.example)** - Plantilla de variables de entorno
+- **[🔧 .github/workflows/](../.github/workflows/)** - GitHub Actions workflows
 
 ### Recursos Externos
 

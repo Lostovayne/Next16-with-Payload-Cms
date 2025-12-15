@@ -1,0 +1,192 @@
+# Auto-merge para PRs de Dependabot (solo actualizaciones menores y patches)
+name: Dependabot Auto-Merge
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+
+jobs:
+  # Job 1: Verificar si es un PR de Dependabot
+  dependabot-metadata:
+    name: Check Dependabot PR
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+    outputs:
+      is-minor-or-patch: ${{ steps.check-update-type.outputs.is-minor-or-patch }}
+      dependency-names: ${{ steps.metadata.outputs.dependency-names }}
+      update-type: ${{ steps.metadata.outputs.update-type }}
+
+    steps:
+      - name: Fetch Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check update type
+        id: check-update-type
+        run: |
+          UPDATE_TYPE="${{ steps.metadata.outputs.update-type }}"
+          echo "Update type: $UPDATE_TYPE"
+
+          if [[ "$UPDATE_TYPE" == "version-update:semver-patch" ]] || [[ "$UPDATE_TYPE" == "version-update:semver-minor" ]]; then
+            echo "is-minor-or-patch=true" >> $GITHUB_OUTPUT
+            echo "✅ This is a minor or patch update - eligible for auto-merge"
+          else
+            echo "is-minor-or-patch=false" >> $GITHUB_OUTPUT
+            echo "❌ This is a major update - requires manual review"
+          fi
+
+      - name: Log dependency info
+        run: |
+          echo "### 📦 Dependency Update Information" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Dependencies | ${{ steps.metadata.outputs.dependency-names }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Update Type | ${{ steps.metadata.outputs.update-type }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Package Ecosystem | ${{ steps.metadata.outputs.package-ecosystem }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Auto-merge Eligible | ${{ steps.check-update-type.outputs.is-minor-or-patch }} |" >> $GITHUB_STEP_SUMMARY
+
+  # Job 2: Auto-approve PRs menores
+  auto-approve:
+    name: Auto-approve Minor Updates
+    runs-on: ubuntu-latest
+    needs: dependabot-metadata
+    if: needs.dependabot-metadata.outputs.is-minor-or-patch == 'true'
+
+    steps:
+      - name: Approve PR
+        run: |
+          gh pr review "$PR_NUMBER" --repo "$REPO" --approve --body "✅ **Auto-approved by GitHub Actions**
+
+          This is a ${{ needs.dependabot-metadata.outputs.update-type }} update.
+
+          **Dependencies updated:**
+          ${{ needs.dependabot-metadata.outputs.dependency-names }}
+
+          The PR will be automatically merged once all CI checks pass."
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Add approval summary
+        run: |
+          echo "### ✅ PR Auto-Approved" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The PR has been automatically approved." >> $GITHUB_STEP_SUMMARY
+
+  # Job 3: Enable auto-merge
+  enable-auto-merge:
+    name: Enable Auto-Merge
+    runs-on: ubuntu-latest
+    needs: [dependabot-metadata, auto-approve]
+    if: needs.dependabot-metadata.outputs.is-minor-or-patch == 'true'
+
+    steps:
+      - name: Enable auto-merge
+        run: |
+          gh pr merge "$PR_NUMBER" --repo "$REPO" --auto --squash
+          echo "✅ Auto-merge enabled for PR"
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `🤖 **Auto-merge enabled**
+
+            This PR will be automatically merged once all required checks pass.
+
+            **Update Type:** ${{ needs.dependabot-metadata.outputs.update-type }}
+            **Dependencies:** ${{ needs.dependabot-metadata.outputs.dependency-names }}
+
+            ---
+            *Powered by Dependabot Auto-Merge*`
+            })
+
+      - name: Success summary
+        run: |
+          echo "### 🎉 Auto-Merge Enabled" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Status | ✅ Approved and queued for merge |" >> $GITHUB_STEP_SUMMARY
+          echo "| Dependencies | ${{ needs.dependabot-metadata.outputs.dependency-names }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Update Type | ${{ needs.dependabot-metadata.outputs.update-type }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The PR will merge automatically once all status checks pass." >> $GITHUB_STEP_SUMMARY
+
+  # Job 4: Notificar si requiere revisión manual
+  manual-review-required:
+    name: Manual Review Required
+    runs-on: ubuntu-latest
+    needs: dependabot-metadata
+    if: needs.dependabot-metadata.outputs.is-minor-or-patch == 'false'
+
+    steps:
+      - name: Label PR for manual review
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.issues.addLabels({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['needs-review', 'major-update']
+            })
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `⚠️ **Manual Review Required**
+
+            This is a **major version update** (${{ needs.dependabot-metadata.outputs.update-type }}) that requires manual review.
+
+            **Dependencies:** ${{ needs.dependabot-metadata.outputs.dependency-names }}
+
+            Please:
+            1. 📖 Review the changelog for breaking changes
+            2. 🧪 Test the update locally
+            3. ✅ Approve and merge manually if safe
+
+            ---
+            *Auto-merge is disabled for major updates*`
+            })
+
+      - name: Manual review summary
+        run: |
+          echo "### ⚠️ Manual Review Required" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Status | 🔍 Awaiting manual review |" >> $GITHUB_STEP_SUMMARY
+          echo "| Dependencies | ${{ needs.dependabot-metadata.outputs.dependency-names }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Update Type | ${{ needs.dependabot-metadata.outputs.update-type }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "⚠️ This is a major version update that could contain breaking changes." >> $GITHUB_STEP_SUMMARY
+          echo "Please review carefully before merging." >> $GITHUB_STEP_SUMMARY
